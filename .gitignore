@@ -1,0 +1,31 @@
+.glide/
+/dist
+bin/**/amd64/amp
+bin/**/amd64/amp.exe
+portal/client/node_modules/**
+*.alpine
+/*.exe
+coverage.out
+coverage-all.out
+
+# tests
+*.log
+test_*/
+
+# terraform
+instance*.tf.json
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.lock.info
+# custom configuration
+parameters.json
+ikt.vol.*
+
+# secrets
+*.pem
+platform/secrets/*
+
+# ampbeat
+cmd/ampbeat/build/
+cmd/ampbeat/ampbeat.full.yml

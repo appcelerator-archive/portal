@@ -1,0 +1,20 @@
+sudo: required
+
+services:
+  - docker
+
+language: bash
+
+install:
+  - sudo apt-get update
+
+before_script:
+
+script:
+  - set -e
+  - make clean build
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+      echo "Docker image publication has been disabled for now";
+    fi
