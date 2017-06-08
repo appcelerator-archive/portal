@@ -26,8 +26,11 @@ export class LogsComponent implements OnInit, AfterViewChecked, OnDestroy {
   filter = ""
   isReturnBack = false
   timer : any
-  autoRefreshToggle = false
+  autoRefresh = false
   lastTimestamp = ""
+  infraStacks = false
+  currentService = ""
+  currentStack = ""
 
   constructor(
     private menuService : MenuService,
@@ -47,13 +50,12 @@ export class LogsComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.routeSub = this.route.params.subscribe(params => {
       let object = params['object']//'global' or 'stack' or 'service' or 'container'
       let ref = params['ref'];//stackName or serviceId or containerId or 'all'
-      console.log("object="+object+" ref="+ref)
       this.computeNames(object, ref)
       if (ref) {
         this.isReturnBack = true
       }
 
-      this.req.infra = false
+      this.req.includeAmpLogs = false
       this.req.size = 1000
 
       if (object=='stack') {
@@ -72,7 +74,6 @@ export class LogsComponent implements OnInit, AfterViewChecked, OnDestroy {
         this.req.node = ref
         this.menuService.setItemMenu('logs', 'View node')
       }
-      console.log(this.req)
       this.executeRequest()
 
     })
@@ -102,6 +103,7 @@ export class LogsComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   executeRequest() {
+    console.log(this.req)
     this.httpService.logs(this.req).subscribe(
       data => {
         this.logs = data
@@ -112,8 +114,8 @@ export class LogsComponent implements OnInit, AfterViewChecked, OnDestroy {
     )
   }
 
-  autoRefresh() {
-    this.autoRefreshToggle = !this.autoRefreshToggle;
+  autoRefreshToggle() {
+    this.autoRefresh = !this.autoRefresh;
     if (this.autoRefresh) {
       this.menuService.setCurrentTimer(setInterval(() => this.executeRequest(), 3000))
     } else {
@@ -121,6 +123,12 @@ export class LogsComponent implements OnInit, AfterViewChecked, OnDestroy {
         this.menuService.clearCurrentTimer()
       }
     }
+  }
+
+  infraStacksToggle() {
+    this.infraStacks = !this.infraStacks
+    this.req.includeAmpLogs = this.infraStacks
+    this.executeRequest()
   }
 
   returnBack() {
@@ -139,8 +147,27 @@ export class LogsComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   setFilter(filter : string) {
-    this.req.message = filter
-    console.log(filter)
+    if (filter.toLowerCase().startsWith("stack:")) {
+      let stack =  filter.substring(6).trim()
+      this.req.stack = stack
+      this.req.service = ""
+      if (stack ==  "") {
+        this.currentStack = ""
+      } else {
+        this.currentStack = "Filter on stack: "+stack
+      }
+    } else if (filter.toLowerCase().startsWith("service:")) {
+      let service =  filter.substring(8).trim()
+      this.req.service = service
+      this.req.stack = ""
+      if (service ==  "") {
+        this.currentService = ""
+      } else {
+        this.currentService= "Filter on service: "+service
+      }
+    } else {
+      this.req.message = filter
+    }
     this.executeRequest()
   }
 
