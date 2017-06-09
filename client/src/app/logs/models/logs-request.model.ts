@@ -6,7 +6,7 @@ export class LogsRequest {
   public service: string
   public stack: string
   public task: string
-  public infra: boolean
+  public includeAmpLogs: boolean
 
   constructor() {
   }
