@@ -20,8 +20,8 @@ script:
   - make build-portal
 
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker tag appcelerator/portal:local appcelerator/portal:latest
-    docker push appcelerator/portal:latest;
-    fi
+    #if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    #docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    #docker tag appcelerator/portal:local appcelerator/portal:latest;
+    #docker push appcelerator/portal:latest;
+    #fi
