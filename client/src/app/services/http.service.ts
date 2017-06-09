@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'RxJS/Rx';
+//import { Observable } from 'RxJS/Rx';
 import { User } from '../models/user.model';
 import { Team } from '../organizations/models/team.model';
 import { Organization } from '../organizations/models/organization.model';
@@ -20,9 +18,14 @@ import { Log } from '../logs/models/log.model';
 import { Node } from '../nodes/models/node.model';
 import { Dashboard } from '../dashboard/models/dashboard.model'
 import * as d3 from 'd3';
-import 'rxjs/add/operator/retrywhen';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/retryWhen';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/delay';
+
+
 
 const httpRetryDelay = 200
 const httpRetryNumber = 3

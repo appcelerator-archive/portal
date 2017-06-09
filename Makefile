@@ -50,8 +50,13 @@ PORTALSERVERDIR=$(PORTALDIR)/server
 PORTALTAG := local
 PORTALIMG := appcelerator/$(PORTAL):$(PORTALTAG)
 
-build-portal: $(PORTALSERVERTARGET)
+build-portal:
+	cd client; ng build --prod --aot --output-path $GOPATH/src/github.com/appcelerator/portal/server/public
 	@echo "build $(PORTALIMG)"
 	@$(DOCKER_CMD) build -t $(PORTALIMG) $(PORTALDIR)/server || (rm -f $(PORTALSERVERTARGET); exit 1)
 
-rebuild-portal: build-portal
+rebuild-portal:
+	@cd client; npm install
+	@cd client; ng build --prod --aot --output-path $GOPATH/src/github.com/appcelerator/portal/server/public
+	@echo "build $(PORTALIMG)"
+	@$(DOCKER_CMD) build -t $(PORTALIMG) $(PORTALDIR)/server || (rm -f $(PORTALSERVERTARGET); exit 1)
