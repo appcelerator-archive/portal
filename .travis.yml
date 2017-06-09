@@ -7,12 +7,17 @@ language: bash
 
 install:
   - sudo apt-get update
-
-before_script:
+  - sudo apt-get install docker-engine
+  - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+  - sudo apt-get install -y nodejs
+  - cd client
+  - npm install
+  - npm install rxjs --save-dev
+  - sudo npm install -g @angular/cli
 
 script:
-  - set -e
-  - make clean build
+  - cd ..
+  - make build-portal
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
