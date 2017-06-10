@@ -156,8 +156,8 @@ export class GraphCounterSquare {
         .attr('stroke', 'lightgrey')
         .style('fill', color)
         .attr('fill-opacity', 0.4)
-        .attr("rx", 10)
-        .attr("ry", 10)
+        .attr("rx", 3)
+        .attr("ry", 3)
     }
 
   }
