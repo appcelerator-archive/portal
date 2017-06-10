@@ -40,6 +40,11 @@ export class Graph {
   public transparentLegend: boolean
   public removeLocalLegend: boolean
   public roundedBox : boolean
+  public prometheus : boolean
+  public prometheusSource : string
+  public prometheusMetric : string
+  public prometheusMetricLabel : string
+  public metricQuery : string
 
 
   constructor(id: string, x : number, y : number, w: number, h: number, type: string, title : string) {
@@ -65,6 +70,7 @@ export class Graph {
     this.legendColors = []
     this.containerAvg = false
     this.roundedBox = true
+    this.prometheus = false
   }
 
 }

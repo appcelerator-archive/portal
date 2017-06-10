@@ -3,6 +3,7 @@ import { Component, HostListener, OnInit, OnDestroy, Input, ElementRef, ViewChil
 import { Graph } from '../../models/graph.model';
 import { DashboardService } from '../services/dashboard.service'
 import { MenuService } from '../../services/menu.service';
+import { PrometheusService } from '../../prometheus/services/prometheus.service'
 
 @Component({
   selector: 'app-dgraph-editor',
@@ -15,9 +16,12 @@ export class DGraphEditorComponent implements OnInit, OnDestroy {
   all="[centertitle][request][setting][top][histoperiod][bubble][areas][alert]"
   visibility : { [name:string]: string; } = {}
   messageLegend = ""
+  prometheusMetricNames : string[]
+
 
   constructor(
-    public dashboardService : DashboardService) {
+    public dashboardService : DashboardService,
+    public prometheusService : PrometheusService) {
     this.visibility['text']=""
     this.visibility['lines']="[request][centertitle][setting][top][histoperiod]"
     this.visibility['areas']="[request][centertitle][setting][top][histoperiod][areas]"
@@ -46,5 +50,13 @@ export class DGraphEditorComponent implements OnInit, OnDestroy {
     }
     return false
   }
+
+  setObject(prometheus : boolean, object : string) {
+    if (prometheus) {
+      this.prometheusMetricNames = this.prometheusService.getMetricNames(object)
+    }
+    this.dashboardService.setObject(prometheus, object)
+  }
+
 
 }

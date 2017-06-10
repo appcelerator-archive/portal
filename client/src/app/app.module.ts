@@ -19,6 +19,7 @@ import { LogsService } from './logs/services/logs.service';
 import { NodesService } from './nodes/services/nodes.service';
 import { DashboardService } from './dashboard/services/dashboard.service';
 import { ColorsService } from './dashboard/services/colors.service'
+import { PrometheusService } from './prometheus/services/prometheus.service'
 
 //Module
 import { AppRoutingModule} from './app-routing.module';
@@ -124,7 +125,8 @@ import { DgraphAlertComponent } from './dashboard/dgraph-alert/dgraph-alert.comp
     NodesService,
     DashboardService,
     ColorsService,
-    AuthGuard
+    AuthGuard,
+    PrometheusService
   ],
   bootstrap: [AppComponent]
 })

@@ -4,9 +4,10 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'RxJS/Rx';
-import { PrometheusInstantQuery } from '../models/prometheus-instant-query.model'
-import { PrometheusRangeQuery } from '../models/prometheus-range-query.model'
-import { PrometheusSeriesQuery } from '../models/prometheus-series-query.model'
+import { PrometheusSources } from '../models/prometheus-sources.model'
+import { PrometheusSource } from '../models/prometheus-source.model'
+import { PrometheusMetric } from '../models/prometheus-metric.model'
+import { HttpService } from '../../services/http.service'
 
 
 const httpRetryDelay = 200
@@ -14,10 +15,51 @@ const httpRetryNumber = 3
 
 @Injectable()
 export class PrometheusService {
-  prometheusUrl = "prometheus:9090/ap1/v1"
+  private metricsSources : PrometheusSources = new PrometheusSources()
+  public sourceNames : string[] = []
 
 
-  constructor(private http : Http) { }
+  constructor(private httpService : HttpService) {
+    //this.metricsSources.addSource(new PrometheusSource("prometheus","/prometheus/prometheus", 9090))
+    this.metricsSources.addSource(new PrometheusSource("node", "/prometheus/node_exporter", 9100))
+    this.metricsSources.addSource(new PrometheusSource("etcd", "/prometheus/etcd", 2379))
+    this.metricsSources.addSource(new PrometheusSource("haproxy", "/prometheus/haproxy_exporter", 9101))
+    this.metricsSources.addSource(new PrometheusSource("nats", "/prometheus/nats_exporter", 7777))
+    this.initSources()
+  }
+
+  initSources() {
+    let sources = this.metricsSources.getSourceList()
+    for (let source of sources) {
+      this.sourceNames.push(source.name)
+      this.httpService.httpGetServer(source.url+"/metrics").subscribe(
+        (rep) => {
+          let data = rep.text().split('\n')
+          let currentType = ""
+          for (let line of data) {
+            if (line.startsWith('#')) {
+              let info = line.split(' ')
+              if (info.length>=4) {
+                currentType = info[3]
+              }
+            }
+            let param=""
+            let items = line.split(' ')[0].split('{')
+            if (items.length>1) {
+              param = items[1].split('}')[0]
+            }
+            source.addMetric(items[0], currentType, param)
+          }
+          console.log("name: "+source.name)
+          console.log(source)
+        },
+        (err) => {
+          console.log("error on name: "+source.name)
+          console.log(err)
+        }
+      )
+    }
+  }
 
   private setHeaders() : any {
     var headers = new Headers
@@ -25,50 +67,45 @@ export class PrometheusService {
     return headers
   }
 
-  private prometheusHttpGet(url : string) : Observable<any> {
-    //let headers = this.setHeaders()
-    return this.http.get(this.prometheusUrl+url, { headers: this.setHeaders() })
-      .retryWhen(e => e.scan<number>((errorCount, err) => {
-        console.log("retry: "+(errorCount+1))
-        if (errorCount >= httpRetryNumber-1) {
-            throw err;
-        }
-        return errorCount + 1;
-      }, 0).delay(httpRetryDelay)
-    )
+  queryInstant(metric : PrometheusMetric, time : string, timeout : string) : Observable<any> {
+    return this.httpService.httpGetServer("/prometheus/prometheus/api/v1/query?"+metric.getInstantQuery(time, timeout))
   }
 
-  queryInstant(query : PrometheusInstantQuery) : Observable<any> {
-    return this.prometheusHttpGet("/query?"+query.getUrlExpression())
-      .map((res : Response) => {
-        return res.json()
-      }
-    )
+  queryRange(metric : PrometheusMetric, start : string, end : string, step : string, timeout : string)  : Observable<any> {
+    return this.httpService.httpGetServer("/prometheus/prometheus/api/v1/query_range?"+metric.getRangeQuery(start, end, step, timeout))
   }
 
-  queryRange(query : PrometheusRangeQuery)  : Observable<any> {
-    return this.prometheusHttpGet("/query_range?"+query.getUrlExpression())
-      .map((res : Response) => {
-        return res.json()
-      }
-    )
-  }
-
-  querySeries(query : PrometheusSeriesQuery)  : Observable<any> {
-    return this.prometheusHttpGet("/series?"+query.getUrlExpression())
-      .map((res : Response) => {
-        return res.json()
-      }
-    )
+  querySeries(metric : PrometheusMetric, match: string[], start : string, end : string)  : Observable<any> {
+    return this.httpService.httpGetServer("/prometheus/prometheus/api/v1/series?"+metric.getSeriesQuery(match, start, end))
   }
 
   queryLabels(labelName : string)  : Observable<any> {
-    return this.prometheusHttpGet("/label/"+labelName+"?values")
+    return this.httpService.httpGetServer("/prometheus/prometheus/api/v1/label/"+labelName+"?values")
       .map((res : Response) => {
         let data = res.json()
         return data.data
       }
     )
+  }
+
+  getMetricNames(name : string) : string[] {
+    let source = this.metricsSources.getSource(name)
+    if (!source) {
+      return []
+    }
+    return source.metricNames
+  }
+
+  getSource(name : string) : PrometheusSource {
+    return this.metricsSources.getSource(name)
+  }
+
+  getMetric(object : string, name : string) : PrometheusMetric {
+    let source = this.metricsSources.getSource(object)
+    if (!source) {
+      return undefined
+    }
+    return source.getMetric(name)
   }
 
 }

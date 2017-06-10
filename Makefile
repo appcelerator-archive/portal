@@ -47,7 +47,7 @@ build: build-base
 PORTAL := portal
 PORTALDIR=.
 PORTALSERVERDIR=$(PORTALDIR)/server
-PORTALTAG := local
+PORTALTAG := localtest
 PORTALIMG := appcelerator/$(PORTAL):$(PORTALTAG)
 
 build-portal: $(PORTALSERVERTARGET)

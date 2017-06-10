@@ -57,7 +57,7 @@ export class SidebarComponent implements OnInit {
       (data) => {
         let version = data.json()
         console.log("server version")
-        console.log(version)
+        console.log(version.info.version)
         this.serverVersion = version.info.version
       },
       (err) => {

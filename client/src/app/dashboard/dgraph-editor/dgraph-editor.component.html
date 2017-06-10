@@ -64,11 +64,15 @@
                 <span class="caret" style="cursor:pointer;color:black"></span>
               </button>
               <div class="dropdown-menu">
-                <li><a (click)="dashboardService.setObject('all')">All</a></li>
-                <li><a (click)="dashboardService.setObject('stack')">Stack</a></li>
-                <li><a (click)="dashboardService.setObject('service')">Service</a></li>
-                <li><a (click)="dashboardService.setObject('container')">Container</a></li>
-                <li><a (click)="dashboardService.setObject('node')">Node</a></li>
+                <li><a (click)="setObject(false, 'all')">All</a></li>
+                <li><a (click)="setObject(false, 'stack')">Stack</a></li>
+                <li><a (click)="setObject(false, 'service')">Service</a></li>
+                <li><a (click)="setObject(false, 'container')">Container</a></li>
+                <li><a (click)="setObject(false, 'node')">Node</a></li>
+                <li role="separator" class="divider"></li>
+                <li *ngFor="let sourceName of prometheusService.sourceNames">
+                  <a (click)="setObject(true, sourceName)">{{ sourceName }}</a>
+                </li>
               </div>
             </div>
 
@@ -78,7 +82,7 @@
                   Field: {{ dashboardService.selected.field }}
                   <span class="caret" style="cursor:pointer;color:black"></span>
                 </button>
-                <div class="dropdown-menu">
+                <div *ngIf="!dashboardService.selected.prometheus" class="dropdown-menu">
                   <li *ngIf="dashboardService.selected.type=='counter'"><a (click)="dashboardService.setField('number')">number</a></li>
                   <li><a (click)="dashboardService.setField('cpu-usage')">cpu-usage</a></li>
                   <li><a (click)="dashboardService.setField('mem-limit')">mem-limit</a></li>
@@ -93,6 +97,9 @@
                   <li><a (click)="dashboardService.setField('io-total')">io-total</a></li>
                   <li><a (click)="dashboardService.setField('io-write')">io-write</a></li>
                   <li><a (click)="dashboardService.setField('io-read')">io-read</a></li>
+                </div>
+                <div *ngIf="dashboardService.selected.prometheus" class="dropdown-menu">
+                  <li *ngFor="let metricName of prometheusMetricNames"><a (click)="dashboardService.setField(metricName)">{{metricName}}</a></li>
                 </div>
               </div>
             </div>

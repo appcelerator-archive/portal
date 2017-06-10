@@ -20,6 +20,10 @@ export class StatsRequest {
   avg: boolean
   //
   format: boolean
+  prometheus : boolean
+  prometheusSource : string
+  prometheusMetric: string
+  prometheusMetricLabel : string
 
   constructor() {
   }

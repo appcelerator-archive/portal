@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject'
 import { Graph } from '../../models/graph.model';
 import { DashboardInnerStats } from '../models/dashboard-inner-stats.model';
 import { StatsRequest } from '../../models/stats-request.model';
+import { PrometheusService } from '../../prometheus/services/prometheus.service'
 import { StatsRequestItem } from '../models/stats-request-item.model';
 import { GraphCurrentData } from '../../models/graph-current-data.model'
 import { GraphHistoricData } from '../../models/graph-historic-data.model'
@@ -45,6 +46,7 @@ export class DashboardService {
   constructor(
     private httpService : HttpService,
     private menuService : MenuService,
+    private prometheusService : PrometheusService,
     private colorsService: ColorsService) {
       this.notSelected.title = ""
       this.notSelected.object="stack"
@@ -283,14 +285,28 @@ export class DashboardService {
     }
   }
 
-  setObject(name : string) {
-    this.selected.object = name
+  setObject(prometheus : boolean, name : string) {
+    this.selected.prometheus = prometheus
+    if (prometheus) {
+      this.selected.prometheusSource = name
+    } else {
+      this.selected.object = name
+    }
     this.addRequest(this.selected)
     this.onNewData.next()
   }
 
   setField(name : string) {
-    this.selected.field = name
+    if (this.selected.prometheus) {
+      this.selected.field = name
+      this.selected.prometheusMetric = name
+      let metric = this.prometheusService.getMetric(this.selected.prometheusSource, name)
+      if (metric.parameters.length>0) {
+        this.selected.prometheusMetricLabel = metric.parameters[0]
+      }
+    } else {
+      this.selected.field = name
+    }
     this.addRequest(this.selected)
     this.onNewData.next()
   }
@@ -438,13 +454,19 @@ export class DashboardService {
       return
     }
     //console.log(req.id)
-    //console.log(req.request)
+    console.log(req.request)
     let t0 = new Date().getTime()
     if (!req.request.time_group) {
+      if (req.request.prometheus) {
+        this.executeCurrentPrometheusRequest(req)
+        this.innerStats.setRequestTime(t0, req.graphTitle)
+        return
+      }
       this.httpService.statsCurrent(req.request).subscribe(
         (data) => {
           //console.log("data size: "+data.length)
           this.innerStats.setRequestTime(t0, req.graphTitle)
+          console.log(data)
           req.currentResult = data
           req.historicResult = []
           this.onNewData.next(req.id)
@@ -456,6 +478,11 @@ export class DashboardService {
         }
       )
     } else {
+      if (req.request.prometheus) {
+        this.executeHistoricPrometheusRequest(req)
+        this.innerStats.setRequestTime(t0, req.graphTitle)
+        return
+      }
       this.httpService.statsHistoric(req.request).subscribe(
         (data) => {
           this.innerStats.setRequestTime(t0, req.graphTitle)
@@ -466,6 +493,65 @@ export class DashboardService {
         (err) => {
           this.innerStats.setRequestError()
           console.log("request error")
+          console.log(err)
+        }
+      )
+    }
+  }
+
+  executeHistoricPrometheusRequest(req : StatsRequestItem) {
+    console.log("Execute prometheus series request")
+    let request = req.request
+    let metric = this.prometheusService.getMetric(request.prometheusSource, request.prometheusMetric)
+    if (metric) {
+      console.log("execute prometheus requete")
+      this.prometheusService.queryInstant(metric, "","").subscribe(
+        (rep) => {
+          let data = rep.json()
+          console.log("ok")
+          console.log(data)
+          req.historicResult = data
+          req.currentResult = []
+          this.onNewData.next(req.id)
+        },
+        (err) => {
+          console.log("erreur")
+          console.log(err)
+        }
+      )
+    }
+  }
+
+  executeCurrentPrometheusRequest(req : StatsRequestItem) {
+    console.log("Execute prometheus instant request")
+    let request = req.request
+    let metric = this.prometheusService.getMetric(request.prometheusSource, request.prometheusMetric)
+    if (metric) {
+      console.log("execute prometheus requete")
+      this.prometheusService.queryInstant(metric, ""+(new Date().getTime()/1000),"").subscribe(
+        (rep) => {
+          let data = rep.json()
+          req.historicResult = []
+          req.currentResult = []
+          if (data.status == 'success') {
+            let ret : GraphCurrentData[] = []
+            for (let item of data.data.result) {
+              let values : { [name:string]: number; } = {}
+              values[request.prometheusMetric]=+item.value[1]
+              ret.push(
+                new GraphCurrentData(
+                  item.metric[request.prometheusMetricLabel],
+                  values
+                )
+              )
+            }
+            console.log(ret)
+            req.currentResult = ret
+          }
+          this.onNewData.next(req.id)
+        },
+        (err) => {
+          console.log("erreur")
           console.log(err)
         }
       )
@@ -491,7 +577,13 @@ export class DashboardService {
       }
     }
     let req = new StatsRequest()
-    if (graph.object == "stack") {
+    if  (graph.prometheus) {
+      req.prometheus = true
+      req.prometheusSource = graph.prometheusSource
+      req.prometheusMetric = graph.prometheusMetric
+      req.prometheusMetricLabel = graph.prometheusMetricLabel
+
+    } else if (graph.object == "stack") {
         req.group="stack_name"
     } else if (graph.object == "service") {
       req.group="service_name"
@@ -501,18 +593,11 @@ export class DashboardService {
       req.group="node_id"
     } else if (graph.object == 'all') {
       req.group=""
-    } else {
-      return
     }
     req.avg = graph.containerAvg
     if (!req.avg) {
       req.avg = false
     }
-
-    //if (graph.type == "counter" && graph.field != "number") {
-    //  req.group="container_short_name"
-    //}
-
     req.period = this.period
     if (graph.type == 'lines' || graph.type == 'areas') {
       req.time_group = this.period.substring(4);
