@@ -34,7 +34,7 @@ export class HttpService {
   parseTime = d3.timeParse("%Y-%m-%dT%H:%M:%S");
   //default dev debug url
   addr = "https://gw.local.appcelerator.io/v1"
-
+  addrServer ="https://local.appcelerator.io"
 
   constructor(private http : Http) {
     if (window.location.host.substring(0,9)=="localhost") {
@@ -43,6 +43,7 @@ export class HttpService {
     }
     let host = "gw."+window.location.host
     this.addr=window.location.protocol +"//"+host+"/v1"
+    this.addrServer=window.location.protocol +"//"+window.location.host
     console.log("Gateway url: "+this.addr)
   }
 
@@ -583,6 +584,19 @@ export class HttpService {
 
   setToken(token : string) {
     this.token = token
+  }
+
+  httpGetServer(url : string) : Observable<any> {
+    let headers = this.setHeaders()
+    return this.http.get(this.addrServer+url, { headers: this.setHeaders() })
+      .retryWhen(e => e.scan<number>((errorCount, err) => {
+        console.log("retry: "+(errorCount+1))
+        if (errorCount >= httpRetryNumber-1) {
+            throw err;
+        }
+        return errorCount + 1;
+      }, 0).delay(httpRetryDelay)
+    )
   }
 
   httpGet(url : string) : Observable<any> {

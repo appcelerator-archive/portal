@@ -283,7 +283,7 @@ export class DashboardService {
     }
   }
 
-  setObject(name : string) {
+  setObject(prometheus : boolean, name : string) {
     this.selected.object = name
     this.addRequest(this.selected)
     this.onNewData.next()

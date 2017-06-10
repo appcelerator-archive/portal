@@ -7,7 +7,9 @@ import { AppWindow } from '../models/app-window.model';
 import { Graph } from '../models/graph.model';
 import { Dashboard } from './models/dashboard.model';
 import { NgForm } from '@angular/forms';
+import { PrometheusService } from '../prometheus/services/prometheus.service'
 import * as $ from 'jquery';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -40,6 +42,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private menuService : MenuService,
     public dashboardService : DashboardService,
+    public prometheusService : PrometheusService,
     private httpService : HttpService,
     private route: ActivatedRoute,
     private elementRef : ElementRef,
@@ -63,7 +66,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (dashboardId) {
         this.openOneDashboard(dashboardId)
       } else {
-        this.openOneDashboard("")
+        let dashboard = new Dashboard("", "default", this.dashboardService.defaultDefaultDashboard())
+        this.currentDashboard = dashboard
+        this.dialogHidden = true
+        this.dashboardService.setData(dashboard.data)
+        localStorage.setItem('dashboard', dashboard.id);
       }
     }
   }

@@ -64,11 +64,15 @@
                 <span class="caret" style="cursor:pointer;color:black"></span>
               </button>
               <div class="dropdown-menu">
-                <li><a (click)="dashboardService.setObject('all')">All</a></li>
-                <li><a (click)="dashboardService.setObject('stack')">Stack</a></li>
-                <li><a (click)="dashboardService.setObject('service')">Service</a></li>
-                <li><a (click)="dashboardService.setObject('container')">Container</a></li>
-                <li><a (click)="dashboardService.setObject('node')">Node</a></li>
+                <li><a (click)="dashboardService.setObject(false, 'all')">All</a></li>
+                <li><a (click)="dashboardService.setObject(false, 'stack')">Stack</a></li>
+                <li><a (click)="dashboardService.setObject(false, 'service')">Service</a></li>
+                <li><a (click)="dashboardService.setObject(false, 'container')">Container</a></li>
+                <li><a (click)="dashboardService.setObject(false, 'node')">Node</a></li>
+                <li role="separator" class="divider"></li>
+                <li *ngFor="let sourceName of prometheusService.sourceNames">
+                  <a (click)="dashboardService.setObject(true, sourceName)">{{ sourceName }}</a>
+                </li>
               </div>
             </div>
 
