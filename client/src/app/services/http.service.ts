@@ -587,7 +587,6 @@ export class HttpService {
   }
 
   httpGetServer(url : string) : Observable<any> {
-    //let headers = this.setHeaders()
     return this.http.get(this.addrServer+url, { })
       .retryWhen(e => e.scan<number>((errorCount, err) => {
         console.log("retry: "+(errorCount+1))
