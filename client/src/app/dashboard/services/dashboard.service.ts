@@ -550,19 +550,26 @@ export class DashboardService {
     if (!item.currentResult) {
       return []
     }
-    this.sortCurrentByField(item.currentResult, graph.field)
+    this.sortCurrentByField(graph, item.currentResult)
     if (graph.topNumber == 0 || graph.type == 'counterSquare' || graph.type == 'counterCircle') {
       return item.currentResult
     }
     return item.currentResult.slice(0, graph.topNumber)
   }
 
-  sortCurrentByField(data : GraphCurrentData[], field : string) {
+  sortCurrentByField(graph : Graph, data : GraphCurrentData[]) {
     data.sort((a, b) => {
-      if (a.values[field] < b.values[field]) {
-        return 1;
+      if (graph.type == 'bubbles') {
+        if (a.values[graph.bubbleXField]*a.values[graph.bubbleYField] < b.values[graph.bubbleXField]*b.values[graph.bubbleYField]) {
+          return 1;
+        }
+        return -1
+      } else {
+        if (a.values[graph.field] < b.values[graph.field]) {
+          return 1;
+        }
+        return -1
       }
-      return -1
     })
   }
 
@@ -597,12 +604,44 @@ export class DashboardService {
       pdata.graphValuesUnit.push(0) //graphValues and valuesUnit should have the same size
     }
     if (graph.topNumber > 0) {
+      this.sortHistoricResult(graph, list, names.length, graph.topNumber)
       names = names.slice(0, graph.topNumber)
-      for (let dat of list) {
-        dat.graphValues = dat.graphValues.slice(0, graph.topNumber)
-      }
     }
     return new GraphHistoricAnswer(names, list)
+  }
+
+  sortHistoricResult(graph : Graph, list : GraphHistoricData[], size : number, topNumber : number) {
+    let sumCol : number[] = []
+    for (let i=0;i<size;i++) {
+      sumCol.push(0)
+    }
+    for (let item of list) {
+      let i=0
+      for (let val of item.graphValues) {
+        sumCol[i]+=val
+        i++
+      }
+    }
+    let indexes : number[] = []
+    for (let i=0; i<topNumber; i++) {
+      let max = sumCol[0]
+      let index = 0
+      for (let j=1;j<size;j++) {
+        if (sumCol[j]>max) {
+          max=sumCol[j]
+          index=j
+        }
+      }
+      sumCol[index]=0
+      indexes.push(index)
+    }
+    for (let item of list) {
+      let data : number[] = []
+      for (let index of indexes) {
+        data.push(item.graphValues[index])
+      }
+      item.graphValues=data
+    }
   }
 
   clear() {
