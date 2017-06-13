@@ -189,18 +189,18 @@
               <span class="caret" style="cursor:pointer;color:black"></span>
               </button>
               <div class="dropdown-menu">
-                <li><a (click)="dashboardService.setHistoPeriod('now-5m')">5 min</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-10m')">10 min</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-30m')">30 min</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-1h')">1 hour</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-5h')">5 hour</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-10h')">10 hours</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-1j')">1 day</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-10j')">10 days</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-1M')">1 month</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-6M')">6 months</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-1y')">1 year</a></li>
-                <li><a (click)="dashboardService.setHistoPeriod('now-2y')">2 years</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-5m', '30s')">5 min</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-10m', '30s')">10 min</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-30m', '1m')">30 min</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-1h', '1m')">1 hour</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-5h', '5m')">5 hour</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-10h', '10m')">10 hours</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-1d', '30m')">1 day</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-10d', '6h')">10 days</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-1M', '1d')">1 month</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-6M', '7d')">6 months</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-1y', '1M')">1 year</a></li>
+                <li><a (click)="dashboardService.setHistoPeriod('now-2y', '1M')">2 years</a></li>
               </div>
             </div>
           </div>

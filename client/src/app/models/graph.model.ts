@@ -29,6 +29,7 @@ export class Graph {
   public criterion: string
   public criterionValue: string
   public histoPeriod: string //for historic request
+  public histoStep: string //for historic request
   public bubbleXField: string
   public bubbleYField: string
   public bubbleScale: string
