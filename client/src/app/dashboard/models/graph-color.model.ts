@@ -9,4 +9,5 @@ export class GraphColor {
     this.graphId = graphId
     this.color = color
   }
+  
 }

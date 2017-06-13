@@ -26,6 +26,7 @@ class ObjectColors {
     this.graphMap[name+'-'+graphId] = true
     let col = this.colorMap[name]
     if (col) {
+      //console.log(name +": "+col.name+"-"+col.color)
       let exist = this.nameMap[name]
       if (!exist) {
         this.nameMap[name] = "."
@@ -39,7 +40,6 @@ class ObjectColors {
     col = new GraphColor(name, graphId, this.refColor[this.index])
     this.index++
     this.colorMap[name] = col
-    this.graphMap[name+'-'+graphId] = true
     this.nameMap[name] = "."
     this.colorList.push(col)
     return col.color
