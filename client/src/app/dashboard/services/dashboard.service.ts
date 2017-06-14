@@ -604,21 +604,22 @@ export class DashboardService {
       pdata.graphValuesUnit.push(0) //graphValues and valuesUnit should have the same size
     }
     if (graph.topNumber > 0) {
-      this.sortHistoricResult(graph, list, names.length, graph.topNumber)
+      this.sortHistoricResult(graph, list, names, graph.topNumber)
       names = names.slice(0, graph.topNumber)
     }
     return new GraphHistoricAnswer(names, list)
   }
 
-  sortHistoricResult(graph : Graph, list : GraphHistoricData[], size : number, topNumber : number) {
-    let sumCol : number[] = []
+  sortHistoricResult(graph : Graph, list : GraphHistoricData[], names : string[], topNumber : number) {
+    let size = names.length
+    let sumCol = new Array<number>(size);
     for (let i=0;i<size;i++) {
-      sumCol.push(0)
+      sumCol[i]=0
     }
     for (let item of list) {
       let i=0
       for (let val of item.graphValues) {
-        sumCol[i]+=val
+        sumCol[i] = sumCol[i]+val
         i++
       }
     }
@@ -634,6 +635,9 @@ export class DashboardService {
       }
       sumCol[index]=0
       indexes.push(index)
+    }
+    for (let i=0; i<size; i++) {
+      names[i] = names[indexes[i]]
     }
     for (let item of list) {
       let data : number[] = []

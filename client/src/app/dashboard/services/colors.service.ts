@@ -26,7 +26,6 @@ class ObjectColors {
     this.graphMap[name+'-'+graphId] = true
     let col = this.colorMap[name]
     if (col) {
-      //console.log(name +": "+col.name+"-"+col.color)
       let exist = this.nameMap[name]
       if (!exist) {
         this.nameMap[name] = "."
@@ -38,6 +37,7 @@ class ObjectColors {
       this.index = 10
     }
     col = new GraphColor(name, graphId, this.refColor[this.index])
+    console.log(name +": "+col.name+"-"+col.color+" index="+this.index)
     this.index++
     this.colorMap[name] = col
     this.nameMap[name] = "."
@@ -59,23 +59,70 @@ class ObjectColors {
     this.colorList = []
     this.nameMap = {}
     this.graphMap = {}
-    this.index = 0
   }
 }
 
 export class ColorsService {
   private defaultColor = 'magenta'
-  private refColors : string[] = ['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+  private refColors : string[] = [] //['#396AB1', '#DA7C30', '#3E9651', '#CC2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
   private objectColorsMap : { [name:string]: ObjectColors; } = {}
 
   constructor() {
-    for (let i=0;i<100;i++) {
-      this.refColors.push(d3.interpolateCool(Math.random()))
-    }
+    let baseColList : number[] =[0x396AB1, 0xDA7C30, 0x3E9651, 0xCC2529, 0x535154, 0x6B4C9A, 0x922428, 0x948B3D]
+    this.refColors = this.getNewColors(baseColList, 100, 100)
     this.objectColorsMap['stack'] = new ObjectColors('stack', this.refColors)
     this.objectColorsMap['service'] = new ObjectColors('service', this.refColors)
     this.objectColorsMap['container'] = new ObjectColors('container', this.refColors)
     this.objectColorsMap['node'] = new ObjectColors('node', this.refColors)
+  }
+
+  hex2rgb(h) {
+    return [(h & (255 << 16)) >> 16, (h & (255 << 8)) >> 8, h & 255];
+  }
+
+  distanceColors(a, b) {
+      var d = [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+      return Math.sqrt((d[0]*d[0]) + (d[1]*d[1]) + (d[2]*d[2]));
+  }
+
+  newColor(list, d) {
+    let n = 0
+    let ok : boolean
+    let nl=0
+    while(true) {
+      nl++
+      ok = true;
+      n = Math.random()*0xFFFFFF<<0;
+      if (this.distanceColors(this.hex2rgb(0), this.hex2rgb(n)) < 200) {
+        ok = false
+      } else {
+        for (let c in list) {
+          if (this.distanceColors(this.hex2rgb(list[c]), this.hex2rgb(n)) < d) {
+            ok = false;
+            break;
+          }
+        }
+      }
+      if (ok) {
+        return n;
+      } else if (nl>100) {
+        return  Math.random()*0xFFFFFF<<0;
+      }
+    }
+  }
+
+  getNewColors(list, n, d) {
+      var a : number[] = list
+      for(; n > 0; n--) {
+          a.push(this.newColor(a, d));
+      }
+      let ret : string[] = []
+      for (let col of a) {
+        if (col!=0) {
+          ret.push("#"+col.toString(16))
+        }
+      }
+      return ret
   }
 
   public getColor(graph : Graph, name: string) {
