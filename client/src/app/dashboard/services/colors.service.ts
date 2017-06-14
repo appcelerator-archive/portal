@@ -93,10 +93,14 @@ export class ColorsService {
       nl++
       ok = true;
       n = Math.random()*0xFFFFFF<<0;
-      for(var c in list) {
-        if(this.distanceColors(this.hex2rgb(list[c]), this.hex2rgb(n)) < d) {
-          ok = false;
-          break;
+      if (this.distanceColors(this.hex2rgb(0), this.hex2rgb(n)) < 200) {
+        ok = false
+      } else {
+        for (let c in list) {
+          if (this.distanceColors(this.hex2rgb(list[c]), this.hex2rgb(n)) < d) {
+            ok = false;
+            break;
+          }
         }
       }
       if (ok) {
