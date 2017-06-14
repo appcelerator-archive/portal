@@ -18,10 +18,12 @@ export class StatsRequest {
   period: string
   time_group: string
   avg: boolean
+  allows_infra: boolean
   //
   format: boolean
 
   constructor() {
+    this.allows_infra = true
   }
 
 }

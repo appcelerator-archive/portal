@@ -52,11 +52,6 @@ PORTALIMG := appcelerator/$(PORTAL):$(PORTALTAG)
 
 build-portal:
 	@cd client; ng build --prod --aot --output-path ../server/public
-	@echo "build $(PORTALIMG)"
-	@$(DOCKER_CMD) build -t $(PORTALIMG) $(PORTALDIR)/server || (rm -f $(PORTALSERVERTARGET); exit 1)
-
-rebuild-portal:
-	@cd client; npm install
-	@cd client; ng build --prod --aot --output-path ../server/public
+	@docker rmi -f $(PORTALIMG)
 	@echo "build $(PORTALIMG)"
 	@$(DOCKER_CMD) build -t $(PORTALIMG) $(PORTALDIR)/server || (rm -f $(PORTALSERVERTARGET); exit 1)
