@@ -65,6 +65,12 @@ export class GraphLegend {
   }
 
   updateGraph(graph : Graph) {
+
+    let colorList : GraphColor[] = this.colorsService.getColors(graph.object, graph.legendGraphId)
+    if (colorList.length ==0) {
+      return
+    }
+    
     this.svg.selectAll("*").remove();
     if (graph.transparentLegend) {
       this.addClass("graph-transparent")
@@ -92,11 +98,6 @@ export class GraphLegend {
        .style("text-anchor", anchor)
        .style("font-size", fontSize+'px')
        .text(graph.title);
-    }
-    //let colorObject = this.dashboardService.graphObjectColorMap[graph.object]
-    let colorList : GraphColor[] = this.colorsService.getColors(graph.object, graph.legendGraphId)
-    if (colorList.length ==0) {
-      return
     }
 
     let yy = dy*1.2

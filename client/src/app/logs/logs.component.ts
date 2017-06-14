@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ElementRef, AfterViewChecked, ViewChild } from '@angular/core';
 import { MenuService } from '../services/menu.service';
 import { HttpService } from '../services/http.service';
+import { UsersService } from '../services/users.service';
 import { LogsService } from './services/logs.service';
 import { ActivatedRoute } from '@angular/router';
 import { Log } from './models/log.model';
@@ -36,6 +37,7 @@ export class LogsComponent implements OnInit, AfterViewChecked, OnDestroy {
     private menuService : MenuService,
     private route: ActivatedRoute,
     private httpService : HttpService,
+    public usersService : UsersService,
     public logsService : LogsService) {
   }
 

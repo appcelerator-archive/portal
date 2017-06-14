@@ -76,6 +76,9 @@ export class UsersService {
         this.organizationsService.organizations = data
         this.organizationsService.currentOrganization = this.organizationsService.noOrganization
         for (let org of data) {
+          if (org.name == 'so') {
+            this.currentUser.sp = true
+          }
           if (org.name == plainToken.ActiveOrganization) {
             this.organizationsService.currentOrganization = org
           }

@@ -68,9 +68,6 @@ export class GraphCounterSquare {
   updateGraph(graph : Graph)
   {
     this.data = this.dashboardService.getCurrentData(graph)
-    if (this.data.length == 0) {
-      return
-    }
 
     this.svg.selectAll("*").remove();
 

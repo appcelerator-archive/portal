@@ -35,7 +35,7 @@
               type="checkbox"
               [checked]="autoRefresh"
               (click)="autoRefreshToggle()"> Follow</label>
-          <label style="margin:5px 0px 0px 10px">
+          <label *ngIf="this.usersService.currentUser.sp" style="margin:5px 0px 0px 10px">
             <input
               style="height:12px"
               type="checkbox"
