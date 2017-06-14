@@ -10,6 +10,7 @@ export class User {
   public pendingOrganizations: string[];
   public label: string
   public tokenUsed: boolean;
+  public sp: boolean;
 
   constructor(name: string, email: string, role: string) {
     this.name = name;
@@ -19,6 +20,7 @@ export class User {
     this.checked = false;
     this.pendingOrganizations = [];
     this.label=name
+    this.sp=false;
     if (role == "owner") {
       this.label+=" (owner)"
     }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { MenuService } from '../../services/menu.service';
+import { UsersService } from '../../services/users.service';
 import { Subject } from 'rxjs/Subject'
 import { Graph } from '../../models/graph.model';
 import { DashboardInnerStats } from '../models/dashboard-inner-stats.model';
@@ -17,6 +18,7 @@ import * as d3 from 'd3';
 export class DashboardService {
     graphs : Graph[] = []
     editor = false
+    nullPeriod : GraphHistoricData[] = []
     onNewData = new Subject<string>();
     onGraphSelect = new Subject<Graph>()
     yTitleMap = {}
@@ -45,6 +47,7 @@ export class DashboardService {
   constructor(
     private httpService : HttpService,
     private menuService : MenuService,
+    private usersService : UsersService,
     private colorsService: ColorsService) {
       this.notSelected.title = ""
       this.notSelected.object="stack"
@@ -83,6 +86,15 @@ export class DashboardService {
           this.redisplay()
         }, this.refresh * 1000)
       )
+      let histo0 = new GraphHistoricData(new Date())
+      histo0.graphValues=[0]
+      let yest = new Date()
+      yest.setDate(yest.getDate() - 1);
+      let histo1 = new GraphHistoricData(yest)
+      histo0.graphValues=[0]
+      histo1.graphValues=[0]
+      this.nullPeriod.push(histo0)
+      this.nullPeriod.push(histo1)
       this.menuService.onRefreshClicked.subscribe(
         () => {
           if (this.isVisible) {
@@ -524,6 +536,7 @@ export class DashboardService {
     req.stats_mem = true
     req.stats_net = true
     req.stats_io = true
+    req.allows_infra = this.usersService.currentUser.sp
     if (graph.criterion == 'stack_name') {
       req.filter_stack_name = graph.criterionValue
     } else if (graph.criterion == 'service_name') {
@@ -576,10 +589,10 @@ export class DashboardService {
   getHistoricData(graph : Graph) : GraphHistoricAnswer {
     let item = this.requestMap[graph.id]
     if (!item) {
-      return new GraphHistoricAnswer([], [])
+      return new GraphHistoricAnswer([''], this.nullPeriod)
     }
     if (!item.historicResult) {
-      return new GraphHistoricAnswer([], [])
+      return new GraphHistoricAnswer([''], this.nullPeriod)
     }
     //let list = this.sortHistoricByField(item.historicResult, graph.field)
     let dateMap = {}

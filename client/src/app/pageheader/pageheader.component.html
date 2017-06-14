@@ -27,7 +27,8 @@
             <span class="ng-scope">{{menuService.currentMenuItem.description}}</span>
           </div>
           <span appDropdown class="pull-right user-box" style="cursor:pointer;font-size:14px">
-            <i class="fa fa-user-circle-o" style="cursor:pointer"></i>
+            <i *ngIf="this.usersService.currentUser.sp" class="fa fa-user-circle-o" style="cursor:pointer"></i>
+            <i *ngIf="!this.usersService.currentUser.sp" class="fa fa-user" style="cursor:pointer"></i>
             {{ usersService.currentUser.name }}
             <span class="caret" style="cursor:pointer"></span>
             <ul class="dropdown-menu">

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { MenuService } from '../services/menu.service';
+import { UsersService } from '../services/users.service';
 import { MetricsService } from './services/metrics.service';
 import { DockerStacksService } from '../docker-stacks/services/docker-stacks.service';
 import { StatsRequest } from '../models/stats-request.model';
@@ -27,6 +28,7 @@ export class MetricsComponent implements OnInit, OnDestroy {
 
   constructor(
     private menuService : MenuService,
+    private usersService : UsersService,
     public metricsService : MetricsService,
     private route: ActivatedRoute,
     private dockerStacksService : DockerStacksService) {
@@ -70,6 +72,7 @@ export class MetricsComponent implements OnInit, OnDestroy {
       this.computeNames()
 
       let req = new StatsRequest()
+      req.allows_infra = this.usersService.currentUser.sp
       req.stats_cpu = true
       req.stats_mem = true
       req.stats_io = true
