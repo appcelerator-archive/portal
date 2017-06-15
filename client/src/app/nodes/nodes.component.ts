@@ -13,6 +13,7 @@ import { NodesService } from './services/nodes.service';
 })
 export class NodesComponent implements OnInit {
   message : ""
+  listHeight: 400
 
   constructor(
     public listService : ListService,

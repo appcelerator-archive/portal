@@ -120,15 +120,15 @@ export class GraphCounterSquare {
     let alertMax = this.getRealNumber(graph.alertMax)
     if (graph.alert) {
       if (!graph.alertMax ) {
-        if (val <= alertMin) {
+        if (val < alertMin) {
           color="orange"
         } else if (val < alertMin/2) {
           color="red"
         }
       } else if (!graph.alertMin) {
-        if (val <= alertMax) {
+        if (val > alertMax) {
           color="orange"
-        } else if (val < alertMax/2) {
+        } else if (val > alertMax*2) {
           color="red"
         }
       } else if (alertMin < alertMax) {
