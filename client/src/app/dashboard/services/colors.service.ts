@@ -37,7 +37,7 @@ class ObjectColors {
       this.index = 10
     }
     col = new GraphColor(name, graphId, this.refColor[this.index])
-    console.log(name +": "+col.name+"-"+col.color+" index="+this.index)
+    //console.log(name +": "+col.name+"-"+col.color+" index="+this.index)
     this.index++
     this.colorMap[name] = col
     this.nameMap[name] = "."

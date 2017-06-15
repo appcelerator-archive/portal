@@ -344,9 +344,12 @@ export class HttpService {
             }
             node.addr = item.addr
             node.reachability = item.reachability
+            node.labels = item.labels
+            node. labelNames = Object.getOwnPropertyNames(item.labels);
             list.push(node);
           }
         }
+        console.log(list)
         return list
       }
     )

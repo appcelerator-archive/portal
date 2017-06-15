@@ -38,13 +38,17 @@
 
       <span class="help-block" style="color:red;margin-left:20px">{{ message }}</span>
 
-      <div class="row">
-        <div classes="no-padding">
-          <div class="table-responsive">
+      <div class="row" [style.height.px]="listHeight" style="overflow-y:scroll;margin-bottom:10px">
+        <div style="margin-bottom:400px">
             <table class="table table-hover">
               <thead>
                 <tr>
                   <th></th>
+                  <th>
+                    <a>
+                      Labels
+                    </a>
+                  </th>
                   <th>
                     <a>
                       Role
@@ -120,6 +124,17 @@
               <tbody>
                 <tr (click)="nodesService.setCurrentNode(node.id)" [style.color]="getColor(node)" *ngFor="let node of listService.getData()">
                   <td><input type="checkbox" [checked]="nodesService.currentNode.id===node.id" (click)=nodesService.setCurrentNode(node.id)></td>
+                  <td>
+                    <div class="btn dropdown" style="padding:0px">
+                      <button class="dropdown dropdown-toggle" id="topNumber" data-toggle="dropdown" style="background-color:white;border:none">
+                        {{ node.labelNames.length }}
+                        <span class="caret" style="cursor:pointer;color:black"></span>
+                      </button>
+                      <div class="dropdown-menu" style="position:absolute">
+                        <li *ngFor="let name of node.labelNames" (click)="listService.filter('label:'+name+':'+node.labels[name])"><a>{{name}} = {{node.labels[name]}}</a></li>
+                      </div>
+                    </div>
+                  </td>
                   <td>{{ node.role }}</td>
                   <td>{{ node.shortId }}</td>
                   <td>{{ node.hostname }}</td>
@@ -133,7 +148,6 @@
                 </tr>
               </tbody>
             </table>
-          </div>
         </div>
       </div>
     </div>

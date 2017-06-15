@@ -12,9 +12,13 @@ export class Node {
   public leader: boolean
   public addr: string
   public reachability: string
+  public labels: { [name:string]: string; }
+  public labelNames: string[]
 
   constructor(id: string) {
     this.id = id
     this.shortId = id.substring(0, 12)
+    this.labels = {}
+    this.labelNames = []
   }
 }

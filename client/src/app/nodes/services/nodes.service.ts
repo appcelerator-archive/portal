@@ -19,6 +19,15 @@ export class NodesService {
 
 
   match(item : Node, value : string) : boolean {
+    if (value.startsWith('label:')) {
+      let param = value.split(':')
+      for (let lname of item.labelNames) {
+        if (lname==param[1] && item.labels[lname]==param[2]) {
+          return true
+        }
+      }
+      return false
+    }
     if (item.id && item.id.includes(value)) {
       return true
     }
@@ -62,7 +71,7 @@ export class NodesService {
   loadNodes(refresh : boolean) {
     if (!refresh && this.nodes.length>0) {
       this.onNodesLoaded.next()
-      return  
+      return
     }
     this.httpService.nodes().subscribe(
       data => {
