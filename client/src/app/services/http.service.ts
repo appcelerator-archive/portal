@@ -307,13 +307,13 @@ export class HttpService {
   }
 
   addResourceToTeam(orgName : string, teamName : string, resourceId : string) {
-    return this.httpPost("/organizations/"+orgName+"/teams/"+teamName+"/resources",
+    return this.httpPost("/resources/"+resourceId+"/organizations/"+orgName+"/teams/"+teamName,
       { organization_name: orgName, team_name: teamName, resource_id: resourceId}
     )
   }
 
   removeResourceFromTeam(orgName : string, teamName : string, resourceId : string) {
-    return this.httpDelete("/organizations/"+orgName+"/teams/"+teamName+"/resources/"+resourceId)
+    return this.httpDelete("/resources/"+resourceId+"/organizations/"+orgName+"/teams/"+teamName)
   }
 
   changeTeamResourcePermissionLevel(orgName : string, teamName : string, resourceId : string, level : number) {
