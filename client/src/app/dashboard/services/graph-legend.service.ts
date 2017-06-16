@@ -37,7 +37,7 @@ export class GraphLegend {
   }
 
   computeSize(graph : Graph) {
-    this.margin.top = graph.height * 0.15
+    this.margin.top = 10
     this.margin.bottom = 10
     this.margin.left = 10
     this.margin.right = 10
@@ -86,7 +86,8 @@ export class GraphLegend {
     //this.svg.attr('fill-opacity', 0.4)
 
     let yy = dy*1.2
-    let dh = this.height/colorList.length
+    let ddy = this.height/colorList.length*0.8
+    let dh = (this.height-this.height/colorList.length*.9)/colorList.length
     let coef = colorList.length / 20
 
     if (graph.title) {
@@ -101,7 +102,7 @@ export class GraphLegend {
        .attr("transform", "translate(" + [xt+dx,dy-this.margin.top] + ")")
        .attr("dy", "1em")
        .style("text-anchor", anchor)
-       .style("font-size", fontSize*dh/20+'px')
+       .style("font-size", this.height/colorList.length/3*2+'px')
        .text(graph.title);
     }
 
@@ -109,15 +110,15 @@ export class GraphLegend {
         this.svg.append("rect")
           .attr('width', dh*.90)
           .attr('height', dh*.90)
-          .attr("transform", "translate(" + [dx, yy] + ")")
+          .attr("transform", "translate(" + [dx, ddy+yy] + ")")
           .attr('stroke', 'lightgrey')
           .style('fill', col.color)
 
         this.svg.append("text")
          .attr("class", "wtitle")
-         .attr("transform", "translate(" + [dx+dh, yy+dh/2+fontSize*dh/200] + ")")
+         .attr("transform", "translate(" + [dx+dh, yy+ddy+dh/2+this.height/200] + ")")
          .style("text-anchor", "start")
-         .style("font-size", fontSize*dh/40+'px')
+         .style("font-size", this.height/colorList.length/2+'px')
          .text(col.name);
         yy+=dh
     }
