@@ -13,6 +13,7 @@ import { UsersService } from '../../services/users.service'
 })
 export class OrganizationCreateComponent implements OnInit {
   organization : Organization = new Organization("", "")
+  messageError = ""
 
   constructor(
     private organizationsService : OrganizationsService,
@@ -32,11 +33,22 @@ export class OrganizationCreateComponent implements OnInit {
     this.httpService.createOrganization(this.organization.name, this.organization.email).subscribe(
       () => {
         this.menuService.waitingCursor(false)
-        this.organizationsService.loadOrganizations(this.usersService.currentUser.name, true)
-        this.menuService.navigate(['/amp', 'organizations', this.organization.name])
+        this.httpService.userOrganization(this.usersService.currentUser.name).subscribe(
+          data => {
+            this.organizationsService.organizations = data
+            this.menuService.navigate(['/amp', 'organizations', this.organization.name])
+          },
+          err => {
+            let error = err.json()
+            this.messageError = "Organization created, but: "+error.error
+            console.log(err)
+          }
+        )
       },
-      (error) => {
+      (err) => {
         this.menuService.waitingCursor(false)
+        let error = err.json()
+        this.messageError = error.error
         console.log(error)
       }
     )
