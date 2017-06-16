@@ -70,7 +70,7 @@ export class GraphLegend {
     if (colorList.length ==0) {
       return
     }
-    
+
     this.svg.selectAll("*").remove();
     if (graph.transparentLegend) {
       this.addClass("graph-transparent")
@@ -102,6 +102,7 @@ export class GraphLegend {
 
     let yy = dy*1.2
     let dh = this.height/colorList.length
+    let coef = colorList.length / 20
     for (let col of colorList) {
         this.svg.append("rect")
           .attr('width', dh*.90)
@@ -112,9 +113,9 @@ export class GraphLegend {
 
         this.svg.append("text")
          .attr("class", "wtitle")
-         .attr("transform", "translate(" + [dx+dh, yy+dh*.65] + ")")
+         .attr("transform", "translate(" + [dx+dh, yy+dh/2+fontSize*dh/200] + ")")
          .style("text-anchor", "start")
-         .style("font-size", fontSize*.75+'px')
+         .style("font-size", fontSize*dh/40+'px')
          .text(col.name);
         yy+=dh
     }
