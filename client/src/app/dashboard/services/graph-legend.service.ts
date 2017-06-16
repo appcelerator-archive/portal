@@ -84,6 +84,11 @@ export class GraphLegend {
 
     this.svg.on('click', () => this.titleClick());
     //this.svg.attr('fill-opacity', 0.4)
+
+    let yy = dy*1.2
+    let dh = this.height/colorList.length
+    let coef = colorList.length / 20
+
     if (graph.title) {
       let xt = -5
       let anchor = 'left'
@@ -96,13 +101,10 @@ export class GraphLegend {
        .attr("transform", "translate(" + [xt+dx,dy-this.margin.top] + ")")
        .attr("dy", "1em")
        .style("text-anchor", anchor)
-       .style("font-size", fontSize+'px')
+       .style("font-size", fontSize*dh/20+'px')
        .text(graph.title);
     }
 
-    let yy = dy*1.2
-    let dh = this.height/colorList.length
-    let coef = colorList.length / 20
     for (let col of colorList) {
         this.svg.append("rect")
           .attr('width', dh*.90)

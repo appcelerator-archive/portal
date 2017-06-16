@@ -73,14 +73,14 @@ export class DashboardService {
       this.unit['mem-maxusage'] = 'bytes'
       this.unit['mem-usage'] = 'bytes'
       this.unit['mem-usage-p'] = '%'
-      this.unit['net-total-bytes'] = 'bytes'
-      this.unit['net-rx-bytes'] = 'bytes'
-      this.unit['net-rx-packets'] = 'packets'
-      this.unit['net-tx-bytes'] = 'bytes'
-      this.unit['net-tx-packets'] = 'packets'
-      this.unit['io-total'] = 'bytes'
-      this.unit['io-write'] = 'bytes'
-      this.unit['io-read'] = 'bytes'
+      this.unit['net-total-bytes'] = 'bytes/s'
+      this.unit['net-rx-bytes'] = 'bytes/s'
+      this.unit['net-rx-packets'] = 'packets/s'
+      this.unit['net-tx-bytes'] = 'bytes/s'
+      this.unit['net-tx-packets'] = 'packets/s'
+      this.unit['io-total'] = 'bytes/s'
+      this.unit['io-write'] = 'bytes/s'
+      this.unit['io-read'] = 'bytes/s'
       this.cancelRequests()
       this.menuService.setCurrentTimer(setInterval(() => {
           this.redisplay()
