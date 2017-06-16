@@ -399,9 +399,9 @@ export class HttpService {
               this.setValue(datal, datalm, 'cpu-usage', item.cpu.total_usage, 1, 1)
             }
             if (request.stats_io) {
-              this.setValue(datal, datalm, 'io-total', item.io.total, 1, 1)
-              this.setValue(datal, datalm, 'io-write', item.io.write, 1, 1)
-              this.setValue(datal, datalm, 'io-read', item.io.read, 1, 1)
+              this.setValue(datal, datalm, 'io-total', item.io.total, 1, 60)
+              this.setValue(datal, datalm, 'io-write', item.io.write, 1, 60)
+              this.setValue(datal, datalm, 'io-read', item.io.read, 1, 60)
             }
             if (request.stats_mem) {
               this.setValue(datal, datalm, 'mem-limit', item.mem.limit, 1, 1)
@@ -414,11 +414,11 @@ export class HttpService {
               this.setValue(datal, datalm, 'mem-usage-p', item.mem.usage_p, 100, 1)
             }
             if (request.stats_net) {
-              this.setValue(datal, datalm, 'net-rx-bytes', item.net.rx_bytes, 1, 1)
-              this.setValue(datal, datalm, 'net-rx-packets', item.net.rx_packets, 1, 1)
-              this.setValue(datal, datalm, 'net-tx-bytes', item.net.tx_bytes, 1, 1)
-              this.setValue(datal, datalm, 'net-tx-packets', item.net.tx_packets, 1, 1)
-              this.setValue(datal, datalm, 'net-total-bytes', item.net.total_bytes, 1, 1)
+              this.setValue(datal, datalm, 'net-rx-bytes', item.net.rx_bytes, 1, 60)
+              this.setValue(datal, datalm, 'net-rx-packets', item.net.rx_packets, 1, 60)
+              this.setValue(datal, datalm, 'net-tx-bytes', item.net.tx_bytes, 1, 60)
+              this.setValue(datal, datalm, 'net-tx-packets', item.net.tx_packets, 1, 60)
+              this.setValue(datal, datalm, 'net-total-bytes', item.net.total_bytes, 1, 60)
             }
             let hgraph = new GraphHistoricData(this.parseTime(item.group))
             hgraph.name =item.sgroup
@@ -449,9 +449,9 @@ export class HttpService {
               this.setValue(datal, undefined,  'cpu-usage', item.cpu.total_usage, 1, 1)
             }
             if (request.stats_io) {
-              this.setValue(datal, undefined, 'io-total', item.io.total, 1, 1)
-              this.setValue(datal, undefined, 'io-write', item.io.write, 1, 1)
-              this.setValue(datal, undefined, 'io-read', item.io.read, 1, 1)
+              this.setValue(datal, undefined, 'io-total', item.io.total, 1, 60)
+              this.setValue(datal, undefined, 'io-write', item.io.write, 1, 60)
+              this.setValue(datal, undefined, 'io-read', item.io.read, 1, 60)
             }
             if (request.stats_mem) {
               this.setValue(datal, undefined, 'mem-limit', item.mem.limit, 1, 1)
@@ -460,11 +460,11 @@ export class HttpService {
               this.setValue(datal, undefined, 'mem-usage-p', item.mem.usage_p, 100, 1)
             }
             if (request.stats_net) {
-              this.setValue(datal, undefined, 'net-rx-bytes', item.net.rx_bytes, 1, 1)
-              this.setValue(datal, undefined, 'net-rx-packets', item.net.rx_packets, 1, 1)
-              this.setValue(datal, undefined, 'net-tx-bytes', item.net.tx_bytes, 1, 1)
-              this.setValue(datal, undefined, 'net-tx-packets', item.net.tx_packets, 1, 1)
-              this.setValue(datal, undefined, 'net-total-bytes', item.net.total_bytes, 1, 1)
+              this.setValue(datal, undefined, 'net-rx-bytes', item.net.rx_bytes, 1, 60)
+              this.setValue(datal, undefined, 'net-rx-packets', item.net.rx_packets, 1, 60)
+              this.setValue(datal, undefined, 'net-tx-bytes', item.net.tx_bytes, 1, 60)
+              this.setValue(datal, undefined, 'net-tx-packets', item.net.tx_packets, 1, 60)
+              this.setValue(datal, undefined, 'net-total-bytes', item.net.total_bytes, 1, 60)
             }
             list.push(new GraphCurrentData(item.group, datal))
           }
