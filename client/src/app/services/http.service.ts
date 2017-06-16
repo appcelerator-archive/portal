@@ -349,7 +349,6 @@ export class HttpService {
             list.push(node);
           }
         }
-        console.log(list)
         return list
       }
     )
