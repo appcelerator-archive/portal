@@ -8,6 +8,10 @@ import { Graph } from '../models/graph.model';
 import { Dashboard } from './models/dashboard.model';
 import { NgForm } from '@angular/forms';
 import * as $ from 'jquery';
+//sf
+import { Headers, Http, Response } from '@angular/http';
+import { Observable } from 'rxjs';
+import 'rxjs/add/operator/toPromise';
 
 @Component({
   selector: 'app-dashboard',
@@ -39,6 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private menuService : MenuService,
+    private http : Http,
     public dashboardService : DashboardService,
     private httpService : HttpService,
     private route: ActivatedRoute,
@@ -215,6 +220,43 @@ export class DashboardComponent implements OnInit, OnDestroy {
   setMessage(mes : string) {
     this.messageError = mes
     setTimeout(() => { this.messageError=""}, 3000)
+  }
+
+  export() {
+    let data = JSON.stringify(this.dashboardService.graphs)
+    let blob = new Blob(['\ufeff' + data], { type: 'application/json;charset=utf-8;' });
+    let dwldLink = document.createElement("a");
+    let url = URL.createObjectURL(blob);
+    let isSafariBrowser = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1;
+    if (isSafariBrowser) {  //if Safari open in new window to save file with random filename.
+      dwldLink.setAttribute("target", "_blank");
+    }
+    dwldLink.setAttribute("href", url);
+    dwldLink.setAttribute("download", "export.json");
+    dwldLink.style.visibility = "hidden";
+    document.body.appendChild(dwldLink);
+    dwldLink.click();
+    document.body.removeChild(dwldLink);
+  }
+
+  import() {
+    this.moveDialog()
+    this.dialogMode = "Import"
+    this.dialogHidden = false
+  }
+
+  fileSelected(event) {
+    let files = event.srcElement.files;
+    if (!files || !files[0]) {
+      return
+    }
+    var reader = new FileReader();
+    reader.onload = file => {
+      var contents: any = file.target;
+      this.dashboardService.setData(contents.result);
+      this.dialogHidden = true
+    };
+    reader.readAsText(files[0]);
   }
 
 }
