@@ -16,9 +16,48 @@ In the meantime, you can use the current playground hosted at `cloud.appcelerato
 and you can also host your own cluster. You can even create a full cluster on your own laptop
 with `amp cluster create` using the CLI.
 
-## Getting started
+## Build image
 
-For getting started and more detailed information, see [docs](docs/).
+Execute command: make build-portal
+The image "appcelerator/portal:local" is created locally
+
+
+## Portal in amp stack
+
+Use this stack file to add Portal in amp stack
+
+```
+version: "3"
+
+networks:
+  default:
+    external:
+      name: ampnet
+  infrastructure:
+
+services:
+
+  portal:
+    image: appcelerator/portal:local
+    networks:
+      - default
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        io.amp.role: "infrastructure"
+      placement:
+        constraints:
+        - node.labels.amp.type.core == true
+    environment:
+      SERVICE_PORTS: "80"
+      VIRTUAL_HOST: "http://cloud.*,http://local.*,https://cloud.*,https://local.*"
+      FORCE_SSL: 1
+    labels:      io.amp.role: "infrastructure"
+```
+
+and add it, with the command: docker stack up -c <this stack file> amp
+
 
 ## Contributing
 
