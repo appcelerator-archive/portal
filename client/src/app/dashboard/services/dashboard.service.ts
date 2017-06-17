@@ -205,21 +205,25 @@ export class DashboardService {
     if (this.unit[field] == '%') {
       return { val: val, sval: val.toFixed(1)+' %', unit: '%'}
     }
-    if (this.unit[field]!='bytes') {
+    if (this.unit[field]!='bytes' && this.unit[field]!='bytes/s') {
       return { val: val, sval: val.toFixed(0)+" "+this.unit[field], unit: this.unit[field]}
     }
     if (refUnit) {
       //force to compute in the refUnit unit
       return {val: val, sval: (val/this.unitdivider(refUnit)).toFixed(1)+" "+refUnit, unit: refUnit }
     }
+    let past=''
+    if (this.unit[field]=='bytes/s') {
+      past = '/s'
+    }
   	if (val < 1024) {
-  		return {val: val, sval: val.toFixed(0)+' Bytes', unit: 'Bytes'}
+  		return {val: val, sval: val.toFixed(0)+' Bytes'+past, unit: 'Bytes'+past}
   	} else if (val < 1048576) {
-  		return {val: (val/1024), sval: (val/1024).toFixed(1)+' KB', unit: 'KB'}
+  		return {val: (val/1024), sval: (val/1024).toFixed(1)+' KB'+past, unit: 'KB'+past}
   	} else if (val < 1073741824) {
-  		return {val: (val/1048576), sval: (val/1048576).toFixed(1)+ ' MB', unit: 'MB'}
+  		return {val: (val/1048576), sval: (val/1048576).toFixed(1)+ ' MB'+past, unit: 'MB'+past}
   	}
-  	return {val: (val/1073741824), sval: (val/1073741824).toFixed(1)+' GB', unit: 'GB'}
+  	return {val: (val/1073741824), sval: (val/1073741824).toFixed(1)+' GB'+past, unit: 'GB'+past}
   }
 
   adjustCurrentDataToUnit(unit : string, field : string, data : GraphCurrentData[]) : GraphCurrentData[] {
@@ -251,18 +255,18 @@ export class DashboardService {
   }
 
   unitdivider(unit : string) : number {
-    if (unit == 'KB') {
+    if (unit == 'KB' || unit == 'KB/s') {
       return 1024
-    } else if (unit == 'MB') {
+    } else if (unit == 'MB' || unit == 'MB/s') {
       return 1048576
-    } else if (unit == 'GB') {
+    } else if (unit == 'GB' || unit == 'GB/s') {
       return 1073741824
     }
     return 1;
   }
 
   computeUnitFormat(graph : Graph, val : number, unit : string): string {
-    if (this.unit[graph.field] != "bytes") {
+    if (this.unit[graph.field] != "bytes" && this.unit[graph.field] != "bytes/s") {
       return val +" "+unit
     }
     let div = this.unitdivider(unit)

@@ -37,6 +37,7 @@ export class DGraphComponent implements OnInit, OnDestroy {
   private serviceMap = {}
   private svg : any
   private legendMode={}
+  private isDelayUpdate = false
 
   constructor(
     public dashboardService : DashboardService,
@@ -74,7 +75,11 @@ export class DGraphComponent implements OnInit, OnDestroy {
     this.serviceMap[this.graph.type].createGraph(this.graph, this.chartContainer);
     this.dashboardService.onNewData.subscribe(
       () => {
-        this.updateGraph();
+        if (this.graph.type!="legend") {
+          this.updateGraph();
+        } else {
+          this.setDelayUpdate(1000)
+        }
       }
     )
     this.menuService.onWindowResize.subscribe(
@@ -87,6 +92,16 @@ export class DGraphComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.serviceMap[this.graph.type].destroy()
     //this.metricsService.onNewData.unsubscribe()
+  }
+
+  setDelayUpdate(delay : number) {
+    if (!this.isDelayUpdate) {
+      this.isDelayUpdate=true
+      setTimeout(() =>{
+          this.updateGraph()
+          this.isDelayUpdate = false
+      }, delay)
+    }
   }
 
   resizeGraph() {
