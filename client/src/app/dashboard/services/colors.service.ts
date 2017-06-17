@@ -23,6 +23,9 @@ class ObjectColors {
   }
 
   getColor(name: string, graphId: string) : string {
+    if (!name) {
+      return "#000000"
+    }
     this.graphMap[name+'-'+graphId] = true
     let col = this.colorMap[name]
     if (col) {
