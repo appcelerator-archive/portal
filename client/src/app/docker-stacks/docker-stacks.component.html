@@ -118,7 +118,7 @@
               </thead>
               <tbody>
                 <tr (click)="dockerStacksService.setCurrentStack(stack.name)" [style.color]=getColor(stack) *ngFor="let stack of listService.getData()">
-                  <td><input type="checkbox" [checked]="dockerStacksService.currentStack.name===stack.name" (click)=dockerStacksService.setCurrentStack(stack.name)></td>
+                  <td><input type="checkbox" [checked]="dockerStacksService.currentStack.name===stack.name"></td>
                   <td>{{ stack.shortId }}</td>
                   <td>{{ stack.name }}</td>
                   <td>{{ stack.status }}</td>
