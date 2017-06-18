@@ -72,7 +72,7 @@ export class GraphLines {
     let ans = this.dashboardService.getHistoricData(graph)
     this.data = ans.data
     this.names = ans.names
-    if (this.data.length == 0) {
+    if (this.data.length == 0 || this.names.length==0) {
       return
     }
 

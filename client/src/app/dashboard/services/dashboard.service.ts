@@ -11,6 +11,7 @@ import { GraphCurrentData } from '../../models/graph-current-data.model'
 import { GraphHistoricData } from '../../models/graph-historic-data.model'
 import { GraphHistoricAnswer } from '../../models/graph-historic-answer.model'
 import { ColorsService } from './colors.service'
+import { DashboardDefault } from '../models/dashboard-default.model'
 import * as d3 from 'd3';
 
 
@@ -150,13 +151,14 @@ export class DashboardService {
     //
   }
 
-  addLegend(object : string) {
+  addLegend(object : string, offTop : number, offLeft : number) {
     this.x0 += 2
     this.y0 += 2
     this.nbGraph++;
-    let graph = new Graph('graph'+this.nbGraph, this.x0, this.y0, this.w0*2/3, this.h0, "legend", "Legend "+object+"s")
+    let graph = new Graph('graph'+this.nbGraph, this.x0-offLeft, this.y0-offTop, this.w0*2/3, this.h0, "legend", "Legend "+object+"s")
     graph.object=object
     this.graphs.push(graph)
+    this.selected = graph
   }
 
   addInnerStats() {
@@ -577,7 +579,8 @@ export class DashboardService {
   sortCurrentByField(graph : Graph, data : GraphCurrentData[]) {
     data.sort((a, b) => {
       if (graph.type == 'bubbles') {
-        if (a.values[graph.bubbleXField]*a.values[graph.bubbleYField] < b.values[graph.bubbleXField]*b.values[graph.bubbleYField]) {
+        if (a.values[graph.bubbleXField]*a.values[graph.bubbleXField]+a.values[graph.bubbleYField]*a.values[graph.bubbleYField] <
+          b.values[graph.bubbleXField]*b.values[graph.bubbleXField]+b.values[graph.bubbleYField]*b.values[graph.bubbleYField]) {
           return 1;
         }
         return -1
@@ -695,9 +698,7 @@ export class DashboardService {
   }
 
   defaultDefaultDashboard() : string {
-    return `[{"id":"graph2","x":6,"y":7,"width":316,"height":104,"type":"counterSquare","fields":[],"title":"Stacks CPU: ","border":true,"modeParameter":false,"topNumber":3,"alert":true,"alertMin":"30","alertMax":"100","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"all","field":"cpu-usage","counterHorizontal":true,"requestId":"graph2"},{"id":"graph3","x":5,"y":120,"width":317,"height":103,"type":"counterSquare","fields":[],"title":"Stacks Mem: ","border":true,"modeParameter":false,"topNumber":3,"alert":true,"alertMin":"4GB","alertMax":"7GB","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"all","field":"mem-usage","counterHorizontal":true,"requestId":"graph3"},{"id":"graph4","x":4,"y":234,"width":318,"height":110,"type":"counterSquare","fields":[],"title":"Stacks Net: ","border":true,"modeParameter":false,"topNumber":3,"alert":true,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"all","field":"net-total-bytes","counterHorizontal":true,"requestId":"graph4"},{"id":"graph5","x":2,"y":355,"width":319,"height":107,"type":"counterSquare","fields":[],"title":"Stacks IO: ","border":true,"modeParameter":false,"topNumber":3,"alert":true,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"all","field":"io-total","counterHorizontal":true,"requestId":"graph5"},{"id":"graph6","x":485,"y":22,"width":210,"height":54,"type":"counterSquare","fields":[],"title":"Stack number: ","border":true,"modeParameter":false,"topNumber":3,"alert":true,"alertMin":"","alertMax":"1","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"stack","field":"number","counterHorizontal":true,"requestId":"graph6"},{"id":"graph7","x":484,"y":83,"width":211,"height":53,"type":"counterSquare","fields":[],"title":"Service number: ","border":true,"modeParameter":false,"topNumber":3,"alert":true,"alertMin":"","alertMax":"10","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"service","field":"number","counterHorizontal":true,"requestId":"graph7"},{"id":"graph8","x":482,"y":145,"width":212,"height":60,"type":"counterSquare","fields":[],"title":"Container number: ","border":true,"modeParameter":false,"topNumber":3,"alert":true,"alertMin":"","alertMax":"14","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"container","field":"number","counterHorizontal":true,"requestId":"graph8"},{"id":"graph9","x":735,"y":231,"width":559,"height":263,"type":"bubbles","fields":[],"title":"services","border":true,"modeParameter":false,"topNumber":5,"alert":false,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"service","field":"net-total-bytes","bubbleXField":"mem-usage","bubbleYField":"cpu-usage","bubbleScale":"medium","requestId":"graph9"},{"id":"graph10","x":742,"y":30,"width":173,"height":176,"type":"pie","fields":[],"title":"First 3 services CPU ","border":true,"modeParameter":false,"topNumber":3,"alert":false,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"service","field":"cpu-usage","requestId":"graph10"},{"id":"graph11","x":1109,"y":28,"width":183,"height":177,"type":"pie","fields":[],"title":"First 3 services Net","border":true,"modeParameter":false,"topNumber":3,"alert":false,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"service","field":"net-total-bytes","requestId":"graph11"},{"id":"graph12","x":924,"y":30,"width":175,"height":176,"type":"pie","fields":[],"title":"First 3 services Mem","border":true,"modeParameter":false,"topNumber":3,"alert":false,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"service","field":"mem-usage","requestId":"graph12"},{"id":"graph13","x":479,"y":266,"width":217,"height":177,"type":"legend","fields":[],"title":"Legend services","border":false,"modeParameter":false,"topNumber":3,"alert":false,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"service","transparentLegend":false},{"id":"graph14","x":336,"y":8,"width":102,"height":101,"type":"lines","fields":[],"title":"all","border":true,"modeParameter":false,"topNumber":3,"alert":false,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"all","field":"cpu-usage","histoPeriod":"now-30m","requestId":"graph14","yTitle":"cpu usage","histoStep":"1m"},{"id":"graph15","x":335,"y":120,"width":100,"height":103,"type":"lines","fields":[],"title":"all","border":true,"modeParameter":false,"topNumber":3,"alert":false,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"all","field":"mem-usage","histoPeriod":"now-30m","requestId":"graph15","yTitle":"cpu usage","histoStep":"1m"},{"id":"graph16","x":335,"y":235,"width":99,"height":108,"type":"lines","fields":[],"title":"all","border":true,"modeParameter":false,"topNumber":3,"alert":false,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"all","field":"net-total-bytes","histoPeriod":"now-30m","requestId":"graph16","yTitle":"cpu usage","histoStep":"1m"},{"id":"graph17","x":332,"y":357,"width":101,"height":104,"type":"lines","fields":[],"title":"all","border":true,"modeParameter":false,"topNumber":3,"alert":false,"alertMin":"","alertMax":"","criterion":"","criterionValue":"","stackedAreas":true,"legendNames":[],"legendColors":[],"containerAvg":false,"roundedBox":true,"object":"all","field":"cpu-usage","histoPeriod":"now-30m","requestId":"graph17","yTitle":"cpu usage","histoStep":"1m"}]`
-
-
+    return new DashboardDefault().graphs;
   }
 
 }

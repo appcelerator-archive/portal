@@ -130,7 +130,7 @@ export class GraphBubbles {
       }
       this.svg.append('circle')
         .attr('class', 'circle')
-        .attr('r', s)
+        .attr('r', s+2)
         .attr("transform", "translate(" + [x, y] + ")")
         .style('fill', ethis.dashboardService.getObjectColor(graph, dat.group))
         .style("stroke", 'black')

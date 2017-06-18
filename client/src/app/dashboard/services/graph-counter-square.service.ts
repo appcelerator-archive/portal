@@ -38,7 +38,7 @@ export class GraphCounterSquare {
   computeSize(graph : Graph) {
     this.margin.top = 0
     this.margin.bottom = 0
-    this.margin.left = 0
+    this.margin.left = 10
     this.margin.right = 0
     this.width = graph.width - this.margin.left - this.margin.right;
     this.height = graph.height - this.margin.top - this.margin.bottom;

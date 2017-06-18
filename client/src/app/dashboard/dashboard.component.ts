@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 import { MenuService } from '../services/menu.service';
+import { UsersService } from '../services/users.service';
 import { HttpService } from '../services/http.service';
 import { DashboardService } from './services/dashboard.service';
 import { ActivatedRoute } from '@angular/router';
@@ -42,6 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public dialogMode = ""
 
   constructor(
+    public usersService: UsersService,
     private menuService : MenuService,
     private http : Http,
     public dashboardService : DashboardService,
@@ -90,6 +92,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     let offtop = this.container.nativeElement.getBoundingClientRect().top - this.offsetTop0
     let offleft = this.container.nativeElement.getBoundingClientRect().left - this.offsetLeft0
     this.dashboardService.addGraph(type, offtop, offleft)
+  }
+
+  addLegend(type : string) {
+    let offtop = this.container.nativeElement.getBoundingClientRect().top - this.offsetTop0
+    let offleft = this.container.nativeElement.getBoundingClientRect().left - this.offsetLeft0
+    this.dashboardService.addLegend(type, offtop, offleft)
   }
 
   toggleEditor() {
