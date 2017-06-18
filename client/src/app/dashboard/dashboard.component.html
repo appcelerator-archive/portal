@@ -53,8 +53,8 @@
                 <li><a (click)="addGraph('bubbles')">Bubbles</a></li>
                 <li><a (click)="addGraph('counterSquare')">Square counter</a></li>
                 <!--<li><a (click)="addGraph('counterCircle')">Circle counter</a></li>-->
-                <li role="separator" class="divider"></li>
-                <li><a (click)="dashboardService.addInnerStats()">InnerStats</a></li>
+                <li *ngIf="usersService.currentUser.sp" role="separator" class="divider"></li>
+                <li *ngIf="usersService.currentUser.sp"><a (click)="dashboardService.addInnerStats()">InnerStats</a></li>
                 <!--<li><a (click)="dashboardService.copySelected()">Copy selected</a></li>-->
               </div>
             </div>
@@ -65,10 +65,10 @@
                 <span class="caret" style="cursor:pointer;color:white"></span>
               </button>
               <div class="dropdown-menu">
-                <li><a (click)="dashboardService.addLegend('stack')">Stacks</a></li>
-                <li><a (click)="dashboardService.addLegend('service')">Services</a></li>
-                <li><a (click)="dashboardService.addLegend('container')">Containers</a></li>
-                <li><a (click)="dashboardService.addLegend('node')">Nodes</a></li>
+                <li><a (click)="addLegend('stack')">Stacks</a></li>
+                <li><a (click)="addLegend('service')">Services</a></li>
+                <li><a (click)="addLegend('container')">Containers</a></li>
+                <li><a (click)="addLegend('node')">Nodes</a></li>
               </div>
             </div>
 

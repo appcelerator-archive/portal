@@ -118,8 +118,9 @@ export class DGraphComponent implements OnInit, OnDestroy {
 
   onWindowPress(event: MouseEvent) {
     this.draggingWindow = true;
-    this.px = event.clientX;
-    this.py = event.clientY;
+    let pos = this.adjustToGrid(event)
+    this.px = pos.x
+    this.py = pos.y
     if (this.graph.id != 'graph00') {
       this.executeClickMode()
     }
@@ -131,12 +132,15 @@ export class DGraphComponent implements OnInit, OnDestroy {
     if (!this.draggingWindow) {
       return;
     }
-    let offsetX = event.clientX - this.px;
-    let offsetY = event.clientY - this.py;
+    let pos = this.adjustToGrid(event)
+    let offsetX = pos.x - this.px;
+    let offsetY = pos.y - this.py;
     this.graph.x += offsetX;
     this.graph.y += offsetY;
-    this.px = event.clientX;
-    this.py = event.clientY;
+    this.graph.x = Math.floor(this.graph.x/10)*10
+    this.graph.y = Math.floor(this.graph.y/10)*10
+    this.px = pos.x;
+    this.py = pos.y;
     event.stopPropagation();
   }
 
@@ -145,6 +149,7 @@ export class DGraphComponent implements OnInit, OnDestroy {
     this.graph.y += offsetY;
     this.graph.width -= offsetX;
     this.graph.height -= offsetY;
+    this.adjustSizeOnGrid()
     this.resizeGraph()
   }
 
@@ -152,6 +157,7 @@ export class DGraphComponent implements OnInit, OnDestroy {
     this.graph.y += offsetY;
     this.graph.width += offsetX;
     this.graph.height -= offsetY;
+    this.adjustSizeOnGrid()
     this.resizeGraph()
   }
 
@@ -159,20 +165,23 @@ export class DGraphComponent implements OnInit, OnDestroy {
     this.graph.x += offsetX;
     this.graph.width -= offsetX;
     this.graph.height += offsetY;
+    this.adjustSizeOnGrid()
     this.resizeGraph()
   }
 
   bottomRightResize(offsetX: number, offsetY: number) {
     this.graph.width += offsetX;
     this.graph.height += offsetY;
+    this.adjustSizeOnGrid()
     this.resizeGraph()
   }
 
   onCornerClick(event: MouseEvent, resizer?: Function) {
     this.draggingCorner = true;
     this.dashboardService.selected = this.graph
-    this.px = event.clientX;
-    this.py = event.clientY;
+    let pos = this.adjustToGrid(event)
+    this.px = pos.x;
+    this.py = pos.y;
     this.resizer = resizer;
     event.preventDefault();
     event.stopPropagation();
@@ -183,8 +192,9 @@ export class DGraphComponent implements OnInit, OnDestroy {
       if (!this.draggingCorner) {
         return;
       }
-      let offsetX = event.clientX - this.px;
-      let offsetY = event.clientY - this.py;
+      let pos = this.adjustToGrid(event)
+      let offsetX = pos.x - this.px;
+      let offsetY = pos.y - this.py;
 
       let lastX = this.graph.x;
       let lastY = this.graph.y;
@@ -199,8 +209,8 @@ export class DGraphComponent implements OnInit, OnDestroy {
         this.graph.height = pHeight;
         this.resizeGraph()
       }
-      this.px = event.clientX;
-      this.py = event.clientY;
+      this.px = pos.x;
+      this.py = pos.y;
     }
 
   @HostListener('document:mouseup', ['$event'])
@@ -225,4 +235,15 @@ export class DGraphComponent implements OnInit, OnDestroy {
     this.dashboardService.selected = this.graph
   }
 
+  adjustToGrid(event : MouseEvent) : {x: number, y: number } {
+    return {
+      x: Math.floor(event.clientX/10)*10,
+      y: Math.floor(event.clientY/10)*10
+    }
+  }
+
+  adjustSizeOnGrid() {
+    this.graph.width = Math.floor(this.graph.width/10)*10
+    this.graph.height = Math.floor(this.graph.height/10)*10
+  }
 }

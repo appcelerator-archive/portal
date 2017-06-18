@@ -72,10 +72,9 @@ export class GraphAreas {
     let ans = this.dashboardService.getHistoricData(graph)
     this.data = ans.data
     this.names = ans.names
-    if (this.data.length == 0) {
+    if (this.data.length == 0 || this.names.length==0) {
       return
     }
-
     //stack data
     if (graph.stackedAreas) {
       for (let dat of this.data) {
@@ -117,6 +116,11 @@ export class GraphAreas {
         }
       }
     }
+    let yunit = this.dashboardService.computeUnit(graph.field, ymax, "").unit
+    this.data = this.dashboardService.adjustHistoricDataToUnit(yunit, graph.field, this.data)
+    ymax = ymax / this.dashboardService.unitdivider(yunit)
+
+    let yDomain = [0, ymax];
     this.yScale.domain([0, ymax])
 
     for (let ll=0; ll<this.names.length; ll++) {
@@ -125,7 +129,7 @@ export class GraphAreas {
           .defined( d => { return d.graphValues[ll] !== undefined; })
           .x((d: GraphHistoricData) => { return this.xScale(d.date); })
           .y0(this.height)
-          .y1((d: GraphHistoricData) => { return this.yScale(d.graphValues[ll]); })
+          .y1((d: GraphHistoricData) => { return this.yScale(d.graphValuesUnit[ll]); })
 
         this.svg.append("path")
           .data([this.data])
@@ -178,7 +182,7 @@ export class GraphAreas {
          .attr("dy", "1em")
          .style("text-anchor", "middle")
          .style("font-size", fontSize/2+'px')
-         .text(graph.yTitle);
+         .text(graph.yTitle+" ("+yunit+")");
        }
     }
 
