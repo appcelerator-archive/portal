@@ -66,7 +66,8 @@ export class DockerStackDeployComponent implements OnInit {
   }
 
   fileSelected(event) {
-    let files = event.srcElement.files;
+    let ele = event.srcElement || event.target
+    let files = ele.files;
     if (!files || !files[0]) {
       return
     }
