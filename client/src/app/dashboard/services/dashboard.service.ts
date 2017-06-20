@@ -10,7 +10,7 @@ import { StatsRequestItem } from '../models/stats-request-item.model';
 import { GraphCurrentData } from '../../models/graph-current-data.model'
 import { GraphHistoricData } from '../../models/graph-historic-data.model'
 import { GraphHistoricAnswer } from '../../models/graph-historic-answer.model'
-import { ColorsService } from './colors.service'
+import { ColorsService } from '../../services/colors.service'
 import { DashboardDefault } from '../models/dashboard-default.model'
 import * as d3 from 'd3';
 
@@ -200,7 +200,7 @@ export class DashboardService {
   }
 
   getObjectColor(graph : Graph, name : string) : string {
-    return this.colorsService.getColor(graph, name)
+    return this.colorsService.getColor(graph.object, name, graph.id)
   }
 
   computeUnit(field : string, val : number, refUnit: string) : {val: number, sval: string, unit: string} {

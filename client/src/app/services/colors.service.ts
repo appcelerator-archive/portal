@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { GraphColor } from '../models/graph-color.model'
-import { Graph } from '../../models/graph.model'
-import * as d3 from 'd3';
 
 class ObjectColors {
   private index: number
@@ -72,7 +70,7 @@ export class ColorsService {
 
   constructor() {
     let baseColList : number[] =[0x396AB1, 0xDA7C30, 0x3E9651, 0xCC2529, 0x535154, 0x6B4C9A, 0x922428, 0x948B3D]
-    this.refColors = this.getNewColors(baseColList, 100, 100)
+    this.refColors = this.getNewColors(baseColList, 50, 50)
     this.objectColorsMap['stack'] = new ObjectColors('stack', this.refColors)
     this.objectColorsMap['service'] = new ObjectColors('service', this.refColors)
     this.objectColorsMap['container'] = new ObjectColors('container', this.refColors)
@@ -96,7 +94,7 @@ export class ColorsService {
       nl++
       ok = true;
       n = Math.random()*0xFFFFFF<<0;
-      if (this.distanceColors(this.hex2rgb(0), this.hex2rgb(n)) < 200) {
+      if (this.distanceColors(this.hex2rgb(0), this.hex2rgb(n)) < 100) {
         ok = false
       } else {
         for (let c in list) {
@@ -128,12 +126,12 @@ export class ColorsService {
       return ret
   }
 
-  public getColor(graph : Graph, name: string) {
-    let objectColors = this.objectColorsMap[graph.object];
+  public getColor(object: string, name: string, graphId: string) {
+    let objectColors = this.objectColorsMap[object];
     if (!objectColors) {
       return this.defaultColor;
     }
-    return objectColors.getColor(name, graph.id)
+    return objectColors.getColor(name, graphId)
   }
 
   public getColors(object: string, graphId: string): GraphColor[] {
