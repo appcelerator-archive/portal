@@ -56,7 +56,7 @@ services:
     labels:      io.amp.role: "infrastructure"
 ```
 
-and add it, with the command: docker stack up -c <this stack file> amp
+and add it, with the command: docker stack up -c [this stack file] amp
 
 
 ## Contributing
