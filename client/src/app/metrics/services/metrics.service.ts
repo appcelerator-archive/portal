@@ -5,6 +5,7 @@ import { GraphDataAnswer } from '../models/graph-data-answer.model';
 import { GraphLine} from '../models/graph-line.model';
 import { HttpService } from '../../services/http.service';
 import { MenuService } from '../../services/menu.service';
+import { ColorsService } from '../../services/colors.service'
 import { Subject } from 'rxjs/Subject'
 
 @Injectable()
@@ -12,10 +13,10 @@ export class MetricsService {
   histoData : GraphHistoricData[] = []
   public lineVisibleMap = {}
   lines : GraphLine[] = []
-  graphColorsStack = ['blue', 'slateblue', 'blue', 'pink', 'green', 'pink', 'orange', 'red', 'yellow', 'blue']
-  graphColorsService = ['slateblue', 'blue', 'DodgerBlue', 'pink', 'green', 'orange', 'red', 'yellow', 'blue']
-  graphColorsContainer = ['green', 'orange', 'blue', 'magenta', 'pink', 'green', 'orange', 'red', 'yellow', 'blue']
-  graphColors = ['dodgerBlue', 'pink', 'blue', 'pink', 'green', 'orange', 'red', 'yellow', 'blue']
+  //graphColorsStack = ['blue', 'slateblue', 'blue', 'pink', 'green', 'pink', 'orange', 'red', 'yellow', 'blue']
+  //graphColorsService = ['slateblue', 'blue', 'DodgerBlue', 'pink', 'green', 'orange', 'red', 'yellow', 'blue']
+  //graphColorsContainer = ['green', 'orange', 'blue', 'magenta', 'pink', 'green', 'orange', 'red', 'yellow', 'blue']
+  //graphColors = ['dodgerBlue', 'pink', 'blue', 'pink', 'green', 'orange', 'red', 'yellow', 'blue']
   statsRequest : StatsRequest
   onNewData = new Subject();
   timePeriod = "now-10m"
@@ -28,7 +29,8 @@ export class MetricsService {
 
   constructor(
     private httpService : HttpService,
-    private menuService : MenuService) { }
+    private menuService : MenuService,
+    private colorsService: ColorsService) { }
 
   setHistoricRequest(request : StatsRequest, period : number) {
     this.statsRequest = request
@@ -44,16 +46,8 @@ export class MetricsService {
     this.menuService.clearCurrentTimer()
   }
 
-  getColor(index : number) {
-    if (this.object == 'stack') {
-      return this.graphColorsStack[index]
-    } else if (this.object == 'service') {
-      return this.graphColorsService[index]
-    } else if (this.object == 'container') {
-      return this.graphColorsContainer[index]
-    } else {
-      return this.graphColors[index]
-    }
+  getColor(name : string) {
+    return this.colorsService.getColor(this.object, name, undefined)
   }
 
   getHistoricData(fields : string[], object : string, graphType : string) : GraphDataAnswer {
@@ -65,7 +59,7 @@ export class MetricsService {
     if (graphType=='single') {
       for (let ii=0; ii<fields.length; ii++) {
         let name = fields[ii]
-        lines.push(new GraphLine(name, this.graphColors[ii]))
+        lines.push(new GraphLine(name, 'dodgerBlue'))//this.graphColors[ii]))
         if (this.lineVisibleMap[name] === undefined) {
           this.lineVisibleMap[name]=true
         }
@@ -97,7 +91,7 @@ export class MetricsService {
             ret.push(ele.values[fields[0]])
             if (localLineRefMap[ele.name] === undefined) {
               localLineRefMap[ele.name] = ele.name
-              let line = new GraphLine(ele.name, this.graphColors[lines.length])
+              let line = new GraphLine(ele.name, this.colorsService.getColor(object, ele.name, undefined))
               lines.push(line)
               if (this.lineVisibleMap[line.name] === undefined) {
                 this.lineVisibleMap[line.name]=true

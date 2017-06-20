@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { MenuService } from '../../services/menu.service';
 import { DashboardService } from './dashboard.service'
-import { ColorsService } from './colors.service'
-import { GraphColor } from '../../dashboard/models/graph-color.model'
 import { Subject } from 'rxjs/Subject'
 import { Graph } from '../../models/graph.model';
 import * as d3 from 'd3';
@@ -28,8 +26,7 @@ export class GraphInnerStats {
   constructor(
     private httpService : HttpService,
     private menuService : MenuService,
-    private dashboardService : DashboardService,
-    private colorsService : ColorsService) { }
+    private dashboardService : DashboardService) { }
 
   destroy() {
     this.svg.selectAll("*").remove();
