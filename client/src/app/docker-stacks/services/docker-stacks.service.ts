@@ -32,7 +32,7 @@ export class DockerStacksService {
     if (stack.ownerName && stack.ownerName.includes(value)) {
       return true
     }
-    if (stack.ownerType && stack.ownerType.includes(value)) {
+    if (stack.ownerOrganization && stack.ownerOrganization.includes(value)) {
       return true
     }
     return false

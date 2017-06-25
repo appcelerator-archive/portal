@@ -4,7 +4,7 @@ export class Dashboard {
   public id : string
   public name : string
   public ownerName : string
-  public ownerType : string
+  public ownerOrganization : string
   public data : string
   public date : string
 
@@ -14,19 +14,9 @@ export class Dashboard {
     this.data = data
   }
 
-  setOwnerType(type : any) {
-    if (!type || type == 0) {
-      this.ownerType = "USER"
-    } else if (type == 1) {
-      this.ownerType = "ORGANIZATION"
-    } else {
-      this.ownerType = type
-    }
-  }
-
-  set(ownerName : string, ownerType : any, sdate : string) {
+  set(ownerName : string, ownerOrganization : string, sdate : string) {
     this.ownerName = ownerName
-    this.setOwnerType(ownerType)
+    this.ownerOrganization = ownerOrganization
     this.date = sdate
   }
 

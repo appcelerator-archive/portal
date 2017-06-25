@@ -5,17 +5,17 @@ export class DockerStack {
   public createDate: string
   public services: string;
   public ownerName: string;
-  public ownerType: string;
+  public ownerOrganization: string;
   public status: string;
   public runningService: number;
   public totalService: number;
 
-  constructor(id: string, name: string, services: number, ownerName : string, ownerType : string) {
+  constructor(id: string, name: string, services: number, ownerName : string, ownerOrganization : string) {
     this.id = id,
     this.shortId = id.substring(0, 12);
     this.name = name;
     this.ownerName = ownerName;
-    this.ownerType = ownerType
+    this.ownerOrganization = ownerOrganization
   }
 
   set(status : string, date : string, totalService : number, runningService : number) {
