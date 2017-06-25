@@ -317,7 +317,7 @@ export class HttpService {
   }
 
   changeTeamResourcePermissionLevel(orgName : string, teamName : string, resourceId : string, level : number) {
-    return this.httpPut("/organizations/"+orgName+"/teams/"+teamName+"/resources/"+resourceId,
+    return this.httpPut("/resources/"+resourceId+"/organizations/"+orgName+"/teams/"+teamName,
       { organization_name: orgName, team_name: teamName, resource_id: resourceId, permission_level: level }
     )
   }
