@@ -95,9 +95,9 @@
                   </th>
                   <th>
                     <a>
-                      Owner type
-                      <span (click)="listService.order('ownerType', 1)" class="glyphicon glyphicon-chevron-down"></span>
-                      <span (click)="listService.order('ownerType', -1)" class="glyphicon glyphicon-chevron-up"></span>
+                      Organization
+                      <span (click)="listService.order('ownerOrganization', 1)" class="glyphicon glyphicon-chevron-down"></span>
+                      <span (click)="listService.order('ownerOrganization', -1)" class="glyphicon glyphicon-chevron-up"></span>
                     </a>
                   </th>
                   <th>
@@ -123,7 +123,7 @@
                   <td>{{ stack.name }}</td>
                   <td>{{ stack.status }}</td>
                   <td> {{ stack.ownerName }}</td>
-                  <td> {{ stack.ownerType }}</td>
+                  <td> {{ stack.ownerOrganization }}</td>
                   <td> {{ stack.createDate }}</td>
                   <td>
                     <a (click)="serviceList(stack.name)">{{stack.services}}</a>
