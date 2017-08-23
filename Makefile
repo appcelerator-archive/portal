@@ -51,6 +51,6 @@ PORTALTAG := local
 PORTALIMG := appcelerator/$(PORTAL):$(PORTALTAG)
 
 build-portal:
-	@cd client; ng build --prod --aot --output-path ../server/public
+	@cd client; ng build --env=prod --output-path ../server/public
 	@echo "build $(PORTALIMG)"
 	@$(DOCKER_CMD) build -t $(PORTALIMG) $(PORTALDIR)/server || (rm -f $(PORTALSERVERTARGET); exit 1)
