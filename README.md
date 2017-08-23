@@ -16,8 +16,16 @@ In the meantime, you can use the current playground hosted at `cloud.appcelerato
 and you can also host your own cluster. You can even create a full cluster on your own laptop
 with `amp cluster create` using the CLI.
 
+## version 0.12
+
+available image on dockerHub:
+- appcelerator/portal:latest
+- appcelerator/portal:0.12.0
+- appcelerator/portal:0.11.0
+
 ## Build image
 
+It needs to install node v7.7.0 min and npm 5.0.0 min
 Execute command: make build-portal
 The image "appcelerator/portal:local" is created locally
 
