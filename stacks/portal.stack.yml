@@ -9,7 +9,7 @@ networks:
 services:
 
   portal:
-    image: appcelerator/portal:local
+    image: appcelerator/portal:latest
     networks:
       - default
     deploy:
